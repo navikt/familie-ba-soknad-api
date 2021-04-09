@@ -47,6 +47,7 @@ class PdlClient(
             LOG.info("Cause: " + response.errors?.get(0)?.extensions?.details?.cause)
             LOG.info("Policy: " + response.errors?.get(0)?.extensions?.details?.policy)
             LOG.info("Type: " + response.errors?.get(0)?.extensions?.details?.type)
+            LOG.info("Som system: $somSystem")
             throw Exception(response.errorMessages())
         }
     }
@@ -55,7 +56,8 @@ class PdlClient(
         return HttpHeaders().apply {
             add("Nav-Consumer-Token", "Bearer ${stsRestClient.systemOIDCToken}")
             if (somSystem) {
-                add("Authorization", "Bearer ${stsRestClient.systemOIDCToken}")
+                LOG.info("Fjerner gammel og legger på auth-header i pdl-client")
+                set("Authorization", "Bearer ${stsRestClient.systemOIDCToken}")
             }
             add("Tema", TEMA)
         }
