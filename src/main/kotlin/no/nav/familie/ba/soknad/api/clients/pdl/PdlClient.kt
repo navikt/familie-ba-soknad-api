@@ -57,7 +57,8 @@ class PdlClient(
             add("Nav-Consumer-Token", "Bearer ${stsRestClient.systemOIDCToken}")
             if (somSystem) {
                 LOG.info("Fjerner gammel og legger på auth-header i pdl-client")
-                set("Authorization", "Bearer ${stsRestClient.systemOIDCToken}")
+                remove("Authorization")
+                add("Authorization", "Bearer ${stsRestClient.systemOIDCToken}")
             }
             add("Tema", TEMA)
         }
