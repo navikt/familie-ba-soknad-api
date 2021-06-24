@@ -82,7 +82,7 @@ class PersonopplysningerServiceTest {
     }
 
     @Test
-    fun `henPersonInfo skal returnere tom liste hvis ingen familierelasjoner`() {
+    fun `hentPersonInfo skal returnere tom liste hvis ingen familierelasjoner`() {
         every { pdlClient.hentPerson(any()) } returns pdlMockFor("pdlPersonUtenRelasjoner")
         every { kodeverkClient.hentPostnummer() } returns kodeverkMockFor("kodeverkPostnummerRespons")
         val person = personopplysningerService.hentPersoninfo("1")
@@ -90,7 +90,7 @@ class PersonopplysningerServiceTest {
     }
 
     @Test
-    fun `henPersonInfo skal returnere tom liste med barn, der barn er dod`() {
+    fun `hentPersonInfo skal returnere tom liste med barn, der barn er dod`() {
         every { pdlClient.hentPerson(any()) } returns pdlMockFor("pdlBrukerMedDoedBarn")
         every { barnePdlClient.hentPerson("12345678910") } returns pdlMockFor("pdlBarnErDoed")
         every { kodeverkClient.hentPostnummer() } returns kodeverkMockFor("kodeverkPostnummerRespons")
@@ -98,7 +98,7 @@ class PersonopplysningerServiceTest {
         assertEquals(person.barn.size, 0)
     }
     @Test
-    fun `henPersonInfo skal returnere tom liste med barn, der barn er over atten`() {
+    fun `hentPersonInfo skal returnere tom liste med barn, der barn er over atten`() {
         every { pdlClient.hentPerson(any()) } returns pdlMockFor("pdlBarnErOverAtten")
         every { barnePdlClient.hentPerson("12345678910") } returns pdlMockFor("pdlBrukerMedBarnOverAtten")
         every { kodeverkClient.hentPostnummer() } returns kodeverkMockFor("kodeverkPostnummerRespons")
@@ -242,5 +242,16 @@ class PersonopplysningerServiceTest {
         assertEquals(person.adresse?.bruksenhetnummer, "1456")
         assertEquals(person.adresse?.postnummer, "4971")
         assertEquals(person.adresse?.poststed, "SUNDEBRU")
+    }
+    @Test
+    fun `hentPerson sine barn har adressebeskyttelse og barnets navn blir null`() {
+        every { pdlClient.hentPerson(any()) } returns pdlMockFor("pdlPersonMedFlereRelasjoner")
+        every { barnePdlClient.hentPerson("12345678910") } returns pdlMockFor("pdlBarnHarAdresseBeskyttelse")
+        every { kodeverkClient.hentPostnummer() } returns kodeverkMockFor("kodeverkPostnummerRespons")
+
+        val person = personopplysningerService.hentPersoninfo("1")
+        assertTrue(person.barn.toList()[0].adressebeskyttelse)
+        assertEquals(person.barn.toList()[0].navn, null)
+        assertFalse(person.barn.toList()[0].borMedSøker)
     }
 }

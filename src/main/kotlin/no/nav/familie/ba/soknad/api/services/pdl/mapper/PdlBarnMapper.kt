@@ -29,7 +29,7 @@ object PdlBarnMapper {
             val barnHarAdresseBeskyttelse = harPersonAdresseBeskyttelse(barnRespons.data.person?.adressebeskyttelse)
             Barn(
                 ident = barnRespons.data.person?.folkeregisteridentifikator?.first()?.identifikasjonsnummer!!,
-                navn = barnRespons.data.person.navn.firstOrNull()!!.fulltNavn(),
+                navn = if (barnHarAdresseBeskyttelse) { null } else { barnRespons.data.person.navn.firstOrNull()!!.fulltNavn() },
                 fødselsdato = barnRespons.data.person.foedsel.firstOrNull()?.foedselsdato,
                 borMedSøker = when (barnHarAdresseBeskyttelse) {
                     true -> false

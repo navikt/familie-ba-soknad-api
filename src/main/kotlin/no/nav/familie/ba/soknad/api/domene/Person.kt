@@ -14,7 +14,7 @@ data class Person(
 
 data class Barn(
     val ident: String,
-    val navn: String,
+    val navn: String?,
     val borMedSøker: Boolean,
     val fødselsdato: String?,
     val adressebeskyttelse: Boolean
